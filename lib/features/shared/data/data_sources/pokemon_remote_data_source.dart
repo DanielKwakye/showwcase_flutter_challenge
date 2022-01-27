@@ -4,11 +4,13 @@ import 'package:showwcase_flutter_challenge/core/utils/constants.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/models/pokemon_detail_model.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/models/pokemon_list_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_detail.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
 
 /// This contract ensures that what ever client use to access the remote api with return these methods
 abstract class PokemonRemoteDataSource {
-  Future<PokemonListModel?> getPokemonListFromRemoteSource({int? limit , int? offset});
-  Future<PokemonDetailModel?> getPokemonDetailRemoteSource({int? id});
+  Future<PokemonList?> getPokemonListFromRemoteSource({int? limit , int? offset});
+  Future<PokemonDetail?> getPokemonDetailRemoteSource({int? id});
 }
 
 

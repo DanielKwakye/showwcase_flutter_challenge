@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:showwcase_flutter_challenge/core/error/exceptions.dart';
 import 'package:showwcase_flutter_challenge/core/error/failures.dart';
 import 'package:showwcase_flutter_challenge/core/network/network_info.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_remote_data_source.dart';
@@ -15,8 +16,7 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
 
   @override
   Future<Either<Failure?, PokemonList?>?>? addNewPokemon({Pokemon? pokemon}) {
-    // TODO: implement addNewPokemon
-    throw UnimplementedError();
+
   }
 
   @override
@@ -26,9 +26,24 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
   }
 
   @override
-  Future<Either<Failure?, PokemonList?>?>? getPokemonList({int? offset = 0, int? limit = 20}) {
-    // TODO: implement getPokemonList
-    throw UnimplementedError();
+  Future<Either<Failure?, PokemonList?>?>? getPokemonList({int? offset = 0, int? limit = 20}) async {
+    var isConnected = await networkInfo.isConnected;
+    if(isConnected == null || !isConnected){
+      return Left(ServerFailure());
+    }
+
+    try{
+
+      final pokemonModelList = await pokemonRemoteDataSource.getPokemonListFromRemoteSource(offset: offset, limit: limit);
+      if(pokemonModelList == null){
+        return Left(ServerFailure());
+      }
+
+      return Right(pokemonModelList);
+
+    }on ServerException{
+      return Left(ServerFailure());
+    }
   }
 
   @override
