@@ -1,0 +1,16 @@
+{
+  "msg": "Voila un text en france",
+  "title": "French",
+  "welcome_to": "Bienvenue à",
+  "africas_money_mall": "Centre d'argent de l'Afrique",
+  "register": "S'inscrire",
+  "login": "Connexion",
+  "personal_details_title": "Détails personnels",
+  "personal_details_subtitle": "Entrez vos coordonnées ci-dessous",
+  "first_name": "Prénom",
+  "last_name": "Last name",
+  "email": "Nom de famille",
+  "language": "Langue",
+  "password": "Mot de passe",
+  "confirm_password": "Confirmez le mot de passe"
+}

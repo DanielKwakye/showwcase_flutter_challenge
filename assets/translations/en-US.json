@@ -1,0 +1,16 @@
+{
+  "msg": "This is an english text",
+  "title": "English",
+  "welcome_to": "Welcome to",
+  "africas_money_mall": "Africa's money mall",
+  "register": "Register",
+  "login": "Login",
+  "personal_details_title": "Personal Details",
+  "personal_details_subtitle": "Enter your details below",
+  "first_name": "First name",
+  "last_name": "Last name",
+  "email": "Email",
+  "language": "Language",
+  "password": "Password",
+  "confirm_password": "Confirm Password"
+}
