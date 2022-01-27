@@ -12,7 +12,6 @@ class PokemonList extends Equatable {
   const PokemonList({required this.count, this.next, this.previous, required this.results});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [];
 
 }
