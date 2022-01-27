@@ -29,6 +29,28 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+#  Routing
+  auto_route:
+# Service locator
+  get_it:
+# Value equality
+  equatable:
+# Functional programming thingies
+  dartz:
+# Remote API
+  data_connection_checker:
+  http:
+# Local cache
+  shared_preferences:
+# Loader
+  shimmer: any
+  # Localization
+  easy_localization: any
+# Bloc for state management
+  bloc:
+  flutter_bloc:
+
+  #dartz:
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -38,6 +60,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  auto_route_generator: 3.2.1
+  build_runner:
+
+# Testing
+  mockito:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
