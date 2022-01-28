@@ -46,7 +46,8 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
         return Left(ServerFailure());
       }
 
-      return Right(pokemonModelList);
+      pokemonMemoryDataSource.setPokemonListInMemorySource(pokemonModelList);
+      return Right(await pokemonMemoryDataSource.getPokemonListFromMemorySource(limit: limit, offset: offset));
 
     }on ServerException{
       return Left(ServerFailure());
@@ -54,9 +55,10 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
   }
 
   @override
-  Future<Either<Failure?, PokemonList?>?>? searchPokemonList({required String text}) {
-    // TODO: implement searchPokemonList
-    throw UnimplementedError();
+  Future<Either<Failure?, PokemonList?>?>? searchPokemonList({required String text}) async {
+    final result = await pokemonMemoryDataSource.searchPokemonListFromMemorySource(text);
+    return Right(result);
+
   }
 
 }

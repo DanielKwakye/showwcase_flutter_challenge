@@ -44,13 +44,15 @@ dependencies:
   shared_preferences:
 # Loader
   shimmer: any
-  # Localization
+  pull_to_refresh:
+# Localization
   easy_localization: any
 # Bloc for state management
   bloc:
   flutter_bloc:
 
   #dartz:
+
 
 
   # The following adds the Cupertino Icons font to your application.

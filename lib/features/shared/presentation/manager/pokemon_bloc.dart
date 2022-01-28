@@ -45,5 +45,29 @@ class PokemonBloc extends Cubit<BlocState> {
     });
   }
 
+  /// This method  searches from the pokemon memory source
+  void searchPokemon(String text) async {
+
+    // Notify UI that app is fetching list of pokemons
+    emit(BlocState.loadingState());
+    final either = await searchPokemonListUseCase.call(text);
+
+    either?.fold((l) {
+
+      // Notify UI that there was an error whiles fetch the data from the server
+      emit(BlocState.errorState(failure: l.toString()));
+
+    }, (r)  {
+
+      if (r == null) {
+        emit(BlocState<String>.errorState(failure: 'No pokes found'));
+      } else {
+        // Notify UI of the pokemon data received from the server
+        emit(BlocState<PokemonList>.successState(data: r));
+      }
+
+    });
+  }
+
 
 }

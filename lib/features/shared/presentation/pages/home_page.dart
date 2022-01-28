@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:showwcase_flutter_challenge/app/routing/route.gr.dart';
 import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
 import 'package:showwcase_flutter_challenge/core/utils/colors.dart';
 import 'package:showwcase_flutter_challenge/core/utils/helpers.dart';
@@ -7,6 +9,7 @@ import 'package:showwcase_flutter_challenge/features/shared/domain/entities/poke
 import 'package:showwcase_flutter_challenge/features/shared/presentation/manager/pokemon_bloc.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/app_search_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/list_tile_shimmer.dart';
 
 class HomePage extends StatefulWidget {
@@ -34,62 +37,71 @@ class _HomePageView extends WidgetView<HomePage, _HomePageController> {
             bloc: context.read<PokemonBloc>(),
             builder: (ctx, bloc) => Container(
               color: backgroundGray,
-              child: CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    expandedHeight: 180,
-                    title: const Text("Berries"),
-                    floating: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: SafeArea(
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 20, top: kToolbarHeight),
-                            child: AppSearchWidget(
-                              onTextChanged: state.onSearchTextChanged,
+              child: SmartRefresher(
+                controller: state._refreshController,
+                onRefresh: state._onRefresh,
+                onLoading: state._onLoading,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      expandedHeight: 180,
+                      title: const Text("Berries"),
+                      floating: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: SafeArea(
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 20, right: 20, top: kToolbarHeight),
+                              child: AppSearchWidget(
+                                onTextChanged: state.onSearchTextChanged,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  if (bloc is LoadingState)
-                    const SliverToBoxAdapter(
-                      child: AppListTileShimmer(),
-                    ),
-                  if(bloc is ErrorState<String>)
-                    SliverToBoxAdapter(
-                      child: ListTile(
-                        leading: const Icon(Icons.error_outline),
-                        title: Text(bloc.failure),
+                    if (bloc is LoadingState)
+                      const SliverToBoxAdapter(
+                        child: AppListTileShimmer(),
                       ),
-                    ),
-
-                  if (bloc is SuccessState<PokemonList> && bloc.data.results.isEmpty)
-                    const SliverToBoxAdapter(
+                    if(bloc is ErrorState<String>)
+                      SliverToBoxAdapter(
                         child: ListTile(
-                          leading: Icon(Icons.error_outline),
-                          title: Text("No pokes found"),
-                        )),
-                  if (bloc is SuccessState<PokemonList> && bloc.data.results.isNotEmpty)
-                    SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                              (ctx, i) => Container(
-                                margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                                decoration: BoxDecoration(
-                                  color:  Colors.white,
-                                  borderRadius: BorderRadius.circular(10)
-                                ),
-                                child: ListTile(
-                                  leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(bloc.data.results[i].id)),),
-                                  title: Text(bloc.data.results[i].name),
-                                ),
-                              ),
-                          childCount: bloc.data.results.length,
-                    ))
+                          leading: const Icon(Icons.error_outline),
+                          title: Text(bloc.failure),
+                        ),
+                      ),
 
-                ],
+                    if (bloc is SuccessState<PokemonList> && bloc.data.results.isEmpty)
+                      const SliverToBoxAdapter(
+                          child: ListTile(
+                            leading: Icon(Icons.error_outline),
+                            title: Text("No pokes found"),
+                          )),
+                    if (bloc is SuccessState<PokemonList> && bloc.data.results.isNotEmpty)
+                      SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                                (ctx, i) => Container(
+                                  margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                                  padding: const EdgeInsets.symmetric(vertical: 5),
+                                  decoration: BoxDecoration(
+                                    color:  Colors.white,
+                                    borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  child: ListTile(
+                                    leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(bloc.data.results[i].id)),),
+                                    title: Text(bloc.data.results[i].name),
+                                    trailing: const Icon(Icons.favorite_outline),
+                                    onTap: () => context.router.push(PokemonDetailPageRoute(pokemon: bloc.data.results[i])),
+                                  ),
+                                ),
+                            childCount: bloc.data.results.length,
+                      )),
+                    const SliverToBoxAdapter(child: SizedBox(height: 100,),)
+
+                  ],
+                ),
               ),
             ),
           ),
@@ -103,11 +115,13 @@ class _HomePageView extends WidgetView<HomePage, _HomePageController> {
 
 class _HomePageController extends State<HomePage> {
 
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+
   @override
   Widget build(BuildContext context) => _HomePageView(this);
 
   void onSearchTextChanged(text) {
-    debugPrint(text);
+    context.read<PokemonBloc>().searchPokemon(text);
   }
 
   @override
@@ -118,5 +132,24 @@ class _HomePageController extends State<HomePage> {
 
 
   void addNewPokemonTapped() {
+    //context.router.push(const AddNewPokemonPageRoute());
+    // show modal
   }
+
+
+  void _onRefresh() async{
+    // monitor network fetch
+    context.read<PokemonBloc>().fetchPokes(limit: 20,  offset: 0);
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async{
+    // monitor network fetch
+    _refreshController.loadComplete();
+  }
+
+
+
+
 }
