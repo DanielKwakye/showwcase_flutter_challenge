@@ -6,9 +6,9 @@ import 'package:showwcase_flutter_challenge/features/shared/domain/entities/poke
 abstract class PokemonMemoryDataSource {
   Future<PokemonList?> getPokemonListFromMemorySource({int? limit , int? offset});
   Future<PokemonList?> setPokemonListInMemorySource(PokemonList? pokemonList);
-  Future<PokemonDetail?> getPokemonDetailMemorySource({int? id});
-  Future<PokemonList?> addPokemonToMemorySource(PokemonDetail pokemonDetail);
-  Future<PokemonList?> addPokemonToFavoriteMemorySource(PokemonDetail pokemonDetail);
+  Future<PokemonList?> addPokemonToMemorySource(Pokemon pokemon);
+  Future<PokemonList?> addPokemonToFavoriteMemorySource(Pokemon pokemon);
+  Future<PokemonList?> removePokemonFavoriteMemorySource(Pokemon pokemon);
   Future<PokemonList?> searchPokemonListFromMemorySource(String text);
 }
 
@@ -18,22 +18,20 @@ class PokemonMemoryDataSourceImpl implements PokemonMemoryDataSource {
   PokemonMemoryDataSourceImpl(this.pokemonMemoryObject);
 
   @override
-  Future<PokemonList?> addPokemonToFavoriteMemorySource(PokemonDetail pokemonDetail) {
-    // TODO: implement addPokemonToFavoriteMemorySource
-    throw UnimplementedError();
+  Future<PokemonList?> addPokemonToFavoriteMemorySource(Pokemon pokemon)  async {
+    return  pokemonMemoryObject.addPokemonToFavorite(pokemon);
   }
 
   @override
-  Future<PokemonList?> addPokemonToMemorySource(PokemonDetail pokemonDetail) {
-    // TODO: implement addPokemonToMemorySource
-    throw UnimplementedError();
+  Future<PokemonList?> removePokemonFavoriteMemorySource(Pokemon pokemon)  async {
+    return  pokemonMemoryObject.removeFromFavorite(pokemon);
   }
 
   @override
-  Future<PokemonDetail?> getPokemonDetailMemorySource({int? id}) {
-    // TODO: implement getPokemonDetailMemorySource
-    throw UnimplementedError();
+  Future<PokemonList?> addPokemonToMemorySource(Pokemon pokemon) async {
+    return  pokemonMemoryObject.addListItem(pokemon);
   }
+
 
   @override
   Future<PokemonList?> getPokemonListFromMemorySource({int? limit, int? offset}) async {

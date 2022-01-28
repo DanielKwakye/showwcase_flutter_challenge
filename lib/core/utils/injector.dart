@@ -17,7 +17,9 @@ import 'package:showwcase_flutter_challenge/features/shared/data/repositories/po
 import 'package:showwcase_flutter_challenge/features/shared/domain/repositories/pokemon_list_repository.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/add_new_pokemon_use_case.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/add_pokemon_to_favorite_use_case.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/get_pokemon_detail_use_case.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/get_pokemon_list_use_case.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/remove_pokemon_from_favorite_use_case.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/search_pokemon_list_use_case.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/manager/pokemon_bloc.dart';
 
@@ -30,7 +32,9 @@ Future<void> init() async {
       getPokemonListUseCase: sl(),
       addNewPokemonUseCase: sl(),
       addPokemonToFavoriteUseCase: sl(),
-      searchPokemonListUseCase: sl()
+      searchPokemonListUseCase: sl(),
+      removePokemonFromFavoriteUseCase: sl(),
+      getPokemonLDetailUseCase: sl()
   ));
   sl.registerFactory(() => AuthUserBloc(
       isUserAuthenticatedUseCase: sl(),
@@ -43,6 +47,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SearchPokemonListUseCase(sl()));
   sl.registerLazySingleton(() => AddNewPokemonUseCase(sl()));
   sl.registerLazySingleton(() => AddPokemonToFavoriteUseCase(sl()));
+  sl.registerLazySingleton(() => RemovePokemonFromFavoriteUseCase(sl()));
+  sl.registerLazySingleton(() => GetPokemonLDetailUseCase(sl()));
 
   // Use cases for authentication
   sl.registerLazySingleton(() => LoginWithDummyUserUseCase(authUserRepository: sl()));

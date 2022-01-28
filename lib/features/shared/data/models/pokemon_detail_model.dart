@@ -6,7 +6,7 @@ import 'package:showwcase_flutter_challenge/features/shared/domain/entities/poke
 /// For interacting with Pokemon detail API
 class PokemonDetailModel extends PokemonDetail {
 
-  const PokemonDetailModel({required id, required name, required url, required firmness})
+   PokemonDetailModel({required id, required name, required url, required firmness})
       : super(id: id, name: name, url: url, firmness: firmness);
 
   factory PokemonDetailModel.fromJson(Map<String, dynamic> j){

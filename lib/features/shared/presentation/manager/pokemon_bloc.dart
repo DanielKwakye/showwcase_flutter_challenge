@@ -1,23 +1,30 @@
 import 'package:bloc/bloc.dart';
 import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/add_new_pokemon_use_case.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/add_pokemon_to_favorite_use_case.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/get_pokemon_detail_use_case.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/get_pokemon_list_use_case.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/remove_pokemon_from_favorite_use_case.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/search_pokemon_list_use_case.dart';
 
 class PokemonBloc extends Cubit<BlocState> {
 
   final GetPokemonListUseCase getPokemonListUseCase;
   final AddPokemonToFavoriteUseCase addPokemonToFavoriteUseCase;
+  final RemovePokemonFromFavoriteUseCase removePokemonFromFavoriteUseCase;
   final AddNewPokemonUseCase addNewPokemonUseCase;
   final SearchPokemonListUseCase searchPokemonListUseCase;
+  final GetPokemonLDetailUseCase getPokemonLDetailUseCase;
 
   PokemonBloc({
     required this.getPokemonListUseCase,
     required this.addNewPokemonUseCase,
     required this.addPokemonToFavoriteUseCase,
+    required this.removePokemonFromFavoriteUseCase,
     required this.searchPokemonListUseCase,
+    required this.getPokemonLDetailUseCase,
   }) : super(BlocState.initialState());
 
 
@@ -67,6 +74,60 @@ class PokemonBloc extends Cubit<BlocState> {
       }
 
     });
+  }
+
+  /// This adds to pokemon favorite
+  void addPokemonToFavorite(Pokemon pokemon) async {
+
+    emit(BlocState.loadingState());
+    final either = await addPokemonToFavoriteUseCase.call(pokemon);
+
+
+    either?.fold((l) {
+
+      // Notify UI that there was an error whiles fetch the data from the server
+      emit(BlocState.errorState(failure: l.toString()));
+
+    }, (r) {
+
+      if (r == null) {
+        emit(BlocState<String>.errorState(failure: 'No pokes found'));
+      } else {
+        // Notify UI of the pokemon data received from the server
+
+        emit(BlocState<PokemonList>.successState(data: r));
+      }
+
+    });
+
+
+  }
+
+  /// This removes to pokemon fromfavorite
+  void removePokemonFromFavorite(Pokemon pokemon) async {
+
+    emit(BlocState.loadingState());
+    final either = await removePokemonFromFavoriteUseCase.call(pokemon);
+
+
+    either?.fold((l) {
+
+      // Notify UI that there was an error whiles fetch the data from the server
+      emit(BlocState.errorState(failure: l.toString()));
+
+    }, (r) {
+
+      if (r == null) {
+        emit(BlocState<String>.errorState(failure: 'No pokes found'));
+      } else {
+        // Notify UI of the pokemon data received from the server
+
+        emit(BlocState<PokemonList>.successState(data: r));
+      }
+
+    });
+
+
   }
 
 

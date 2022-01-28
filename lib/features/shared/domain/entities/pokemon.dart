@@ -2,16 +2,22 @@ import 'package:equatable/equatable.dart';
 
 /// Pokemon item
 /// We extends [Equatable] on entities to enable value comparisons on the pokemon object
-class Pokemon extends Equatable {
+class Pokemon {
 
   final String id;
   final String name;
   final String url;
+  late bool isFavorite;
 
-  const Pokemon({required this.id,required this.name,required this.url});
+  Pokemon({required this.id,required this.name,required this.url, this.isFavorite = false});
+
+  // @override
+  // List<Object?> get props => [id, name, url];
 
   @override
-  List<Object?> get props => [id, name, url];
+  String toString() {
+    return "(id: $id, name: $name, url: $url, isFavorite: $isFavorite)";
+  }
 
 
 }

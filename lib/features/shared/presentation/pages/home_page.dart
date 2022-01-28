@@ -5,6 +5,7 @@ import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
 import 'package:showwcase_flutter_challenge/core/utils/colors.dart';
 import 'package:showwcase_flutter_challenge/core/utils/helpers.dart';
 import 'package:showwcase_flutter_challenge/core/utils/widget_view.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/manager/pokemon_bloc.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/app_search_widget.dart';
@@ -35,75 +36,87 @@ class _HomePageView extends WidgetView<HomePage, _HomePageController> {
           floatingActionButton: FloatingActionButton(child: const Icon(Icons.add), onPressed: state.addNewPokemonTapped,),
           body: BlocBuilder(
             bloc: context.read<PokemonBloc>(),
-            builder: (ctx, bloc) => Container(
-              color: backgroundGray,
-              child: SmartRefresher(
-                controller: state._refreshController,
-                onRefresh: state._onRefresh,
-                onLoading: state._onLoading,
-                child: CustomScrollView(
-                  slivers: [
-                    SliverAppBar(
-                      expandedHeight: 180,
-                      title: const Text("Berries"),
-                      floating: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: SafeArea(
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 20, right: 20, top: kToolbarHeight),
-                              child: AppSearchWidget(
-                                onTextChanged: state.onSearchTextChanged,
+            builder: (ctx, bloc) {
+              return Container(
+                color: backgroundGray,
+                child: SmartRefresher(
+                  controller: state._refreshController,
+                  onRefresh: state._onRefresh,
+                  onLoading: state._onLoading,
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        expandedHeight: 180,
+                        title: const Text("Pokemon"),
+                        floating: true,
+                        flexibleSpace: FlexibleSpaceBar(
+                          background: SafeArea(
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20, right: 20, top: kToolbarHeight),
+                                child: AppSearchWidget(
+                                  onTextChanged: state.onSearchTextChanged,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
 
-                    if (bloc is LoadingState)
-                      const SliverToBoxAdapter(
-                        child: AppListTileShimmer(),
-                      ),
-                    if(bloc is ErrorState<String>)
-                      SliverToBoxAdapter(
-                        child: ListTile(
-                          leading: const Icon(Icons.error_outline),
-                          title: Text(bloc.failure),
+                      if (bloc is LoadingState)
+                        const SliverToBoxAdapter(
+                          child: AppListTileShimmer(),
                         ),
-                      ),
-
-                    if (bloc is SuccessState<PokemonList> && bloc.data.results.isEmpty)
-                      const SliverToBoxAdapter(
+                      if(bloc is ErrorState<String>)
+                        SliverToBoxAdapter(
                           child: ListTile(
-                            leading: Icon(Icons.error_outline),
-                            title: Text("No pokes found"),
-                          )),
-                    if (bloc is SuccessState<PokemonList> && bloc.data.results.isNotEmpty)
-                      SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                                (ctx, i) => Container(
+                            leading: const Icon(Icons.error_outline),
+                            title: Text(bloc.failure),
+                          ),
+                        ),
+
+                      if (bloc is SuccessState<PokemonList> && bloc.data.results.isEmpty)
+                        const SliverToBoxAdapter(
+                            child: ListTile(
+                              leading: Icon(Icons.error_outline),
+                              title: Text("No pokes found"),
+                            )),
+                      if (bloc is SuccessState<PokemonList> && bloc.data.results.isNotEmpty)
+                        SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                                  (ctx, i) {
+
+                                return Container(
                                   margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                   decoration: BoxDecoration(
-                                    color:  Colors.white,
-                                    borderRadius: BorderRadius.circular(10)
+                                      color:  Colors.white,
+                                      borderRadius: BorderRadius.circular(10)
                                   ),
                                   child: ListTile(
                                     leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(bloc.data.results[i].id)),),
                                     title: Text(bloc.data.results[i].name),
-                                    trailing: const Icon(Icons.favorite_outline),
-                                    onTap: () => context.router.push(PokemonDetailPageRoute(pokemon: bloc.data.results[i])),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(onPressed: () => context.router.push(PokemonDetailPageRoute(pokemon: bloc.data.results[i])), icon: const Icon(Icons.remove_red_eye_rounded)),
+                                        const SizedBox(width: 10,),
+                                        IconButton(onPressed: () => state.addToFavoriteTapped(bloc.data.results[i]), icon: bloc.data.results[i].isFavorite ? const Icon(Icons.favorite) : const Icon(Icons.favorite_outline), ),
+                                      ],
+                                    ),
+                                    // onTap: () => context.router.push(PokemonDetailPageRoute(pokemon: bloc.data.results[i])),
                                   ),
-                                ),
-                            childCount: bloc.data.results.length,
-                      )),
-                    const SliverToBoxAdapter(child: SizedBox(height: 100,),)
+                                );
+                              },
+                              childCount: bloc.data.results.length,
+                            )),
+                      const SliverToBoxAdapter(child: SizedBox(height: 100,),)
 
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         );
   }
@@ -131,9 +144,20 @@ class _HomePageController extends State<HomePage> {
   }
 
 
+
+
   void addNewPokemonTapped() {
     //context.router.push(const AddNewPokemonPageRoute());
     // show modal
+  }
+
+  void addToFavoriteTapped(Pokemon pokemon) {
+    if(pokemon.isFavorite){
+      context.read<PokemonBloc>().removePokemonFromFavorite(pokemon);
+    }else{
+      context.read<PokemonBloc>().addPokemonToFavorite(pokemon);
+    }
+
   }
 
 

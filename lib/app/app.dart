@@ -19,7 +19,10 @@ class MyApp extends StatelessWidget {
           getPokemonListUseCase: sl(),
           addNewPokemonUseCase: sl(),
           addPokemonToFavoriteUseCase: sl(),
-          searchPokemonListUseCase: sl())),
+          searchPokemonListUseCase: sl(),
+          removePokemonFromFavoriteUseCase: sl(),
+          getPokemonLDetailUseCase: sl()
+        ))
       ],
       child: Builder(builder: (ctx) {
           return MaterialApp.router(

@@ -18,4 +18,10 @@ abstract class PokemonListRepository {
 
   /// This contract adds a pokemon item to favorites
   Future<Either<Failure?, PokemonList?>?>? addPokemonToFavorite({Pokemon pokemon});
+
+  /// This contract removes a pokemon from favorites
+  Future<Either<Failure?, PokemonList?>?>? removePokemonFromFavorite({Pokemon pokemon});
+
+  /// This contract gets the pokemon detail
+  Future<Either<Failure?, PokemonDetail?>?>? getPokemonDetail({Pokemon pokemon});
 }

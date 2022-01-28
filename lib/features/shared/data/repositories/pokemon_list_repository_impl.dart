@@ -5,6 +5,7 @@ import 'package:showwcase_flutter_challenge/core/network/network_info.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_memory_data_source.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_remote_data_source.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_detail.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/repositories/pokemon_list_repository.dart';
 
@@ -26,9 +27,9 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
   }
 
   @override
-  Future<Either<Failure?, PokemonList?>?>? addPokemonToFavorite({Pokemon? pokemon}) {
-    // TODO: implement addPokemonToFavorite
-    throw UnimplementedError();
+  Future<Either<Failure?, PokemonList?>?>? addPokemonToFavorite({Pokemon? pokemon}) async {
+     final result = await pokemonMemoryDataSource.addPokemonToFavoriteMemorySource(pokemon!);
+     return Right(result);
   }
 
   @override
@@ -59,6 +60,18 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
     final result = await pokemonMemoryDataSource.searchPokemonListFromMemorySource(text);
     return Right(result);
 
+  }
+
+  @override
+  Future<Either<Failure?, PokemonDetail?>?>? getPokemonDetail({Pokemon? pokemon}) async {
+    // TODO: implement getPokemonDetail
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure?, PokemonList?>?>? removePokemonFromFavorite({Pokemon? pokemon}) async {
+    final result = await pokemonMemoryDataSource.removePokemonFavoriteMemorySource(pokemon!);
+    return Right(result);
   }
 
 }

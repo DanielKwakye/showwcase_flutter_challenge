@@ -6,7 +6,7 @@ import 'package:showwcase_flutter_challenge/features/shared/domain/entities/poke
 class PokemonDetail extends Pokemon {
 
   final Firmness firmness;
-  const PokemonDetail({required id, required name, required url, required this.firmness}) : super(id: id, name: name, url: url);
+  PokemonDetail({required id, required name, required url, required this.firmness}) : super(id: id, name: name, url: url);
 
 }
 
