@@ -13,8 +13,8 @@ class PokemonListModel extends PokemonList {
 
     final pokemonList = list.map((e) {
       final jsonUrl = e['url'] as String;
-      final String id = jsonUrl.substring(jsonUrl.length - 2, jsonUrl.length - 1);
-      return Pokemon(id: id, name: e['name'], url: e['url']);
+      final aStr = jsonUrl.replaceAll(RegExp(r'[^0-9]'),'').substring(1); // '23'
+      return Pokemon(id: aStr, name: e['name'], url: e['url']);
     }).toList();
 
     return PokemonListModel(

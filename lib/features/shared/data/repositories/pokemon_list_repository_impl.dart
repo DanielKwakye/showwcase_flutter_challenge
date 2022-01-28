@@ -22,8 +22,12 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
   });
 
   @override
-  Future<Either<Failure?, PokemonList?>?>? addNewPokemon({Pokemon? pokemon}) {
-
+  Future<Either<Failure?, PokemonList?>?>? addNewPokemon({Pokemon? pokemon}) async {
+    final result = await pokemonMemoryDataSource.addPokemonToMemorySource(pokemon!);
+    if(result == null){
+      return Left(ServerFailure());
+    }
+    return Right(result);
   }
 
   @override

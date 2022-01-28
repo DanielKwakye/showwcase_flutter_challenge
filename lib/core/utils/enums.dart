@@ -10,3 +10,7 @@ enum AppButtonType {
 enum LayoutSize {
   matchParent, wrapContent, standard
 }
+
+enum AnimateType {
+  slideLeft, slideUp
+}

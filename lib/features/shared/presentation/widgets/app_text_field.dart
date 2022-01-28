@@ -17,6 +17,7 @@ class AppTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final String tag;
   final Function()? onPrefixIconTapped;
+  final TextInputType keyboardType;
 
   const AppTextField(this.label, {
     this.initialValue,
@@ -31,6 +32,7 @@ class AppTextField extends StatefulWidget {
     this.onChange,
     this.tag = "",
     this.onPrefixIconTapped,
+    this.keyboardType = TextInputType.text,
     Key? key
   }): super(key: key);
 
@@ -63,7 +65,7 @@ class _AppTextFieldState extends State<AppTextField> {
       children: [
         TextFormField(
           controller: widget.controller,
-          keyboardType: TextInputType.text,
+          keyboardType: widget.keyboardType,
           initialValue: widget.initialValue,
           onTap: widget.onTap,
           validator: widget.validator,

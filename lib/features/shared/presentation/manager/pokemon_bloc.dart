@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
+import 'package:showwcase_flutter_challenge/core/error/failures.dart';
 import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
@@ -126,6 +128,36 @@ class PokemonBloc extends Cubit<BlocState> {
       }
 
     });
+
+
+  }
+
+  /// This removes to pokemon fromfavorite
+  Future<Either<Failure?, PokemonList?>?> addNewPokemon(Pokemon pokemon) async {
+
+    emit(BlocState.loadingState());
+    final either = await addNewPokemonUseCase.call(pokemon);
+
+
+    either?.fold((l) {
+
+      // Notify UI that there was an error whiles fetch the data from the server
+      emit(BlocState.errorState(failure: l.toString()));
+
+    }, (r) {
+
+      if (r == null) {
+        emit(BlocState<String>.errorState(failure: 'No pokes found'));
+      } else {
+        // Notify UI of the pokemon data received from the server
+
+        emit(BlocState<PokemonList>.successState(data: r));
+
+      }
+
+    });
+
+    return either;
 
 
   }

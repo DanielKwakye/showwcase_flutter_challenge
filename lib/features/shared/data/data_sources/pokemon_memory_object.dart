@@ -5,13 +5,31 @@ import 'package:showwcase_flutter_challenge/features/shared/domain/entities/poke
 class PokemonMemoryObject {
 
   List<Pokemon> originalList = [];
+  List<Pokemon> addedList = [];
   PokemonList? pokemonList = const PokemonList(count: 0, results: []);
 
 
   PokemonList? addListItem(Pokemon pokemon){
-    pokemonList?.results.add(pokemon);
-    originalList.add(pokemon);
-    return pokemonList;
+    // check if there is an existing pokemon with same ID
+
+        final existingPokemonIndex = pokemonList?.results.indexWhere((element) {
+          return element.id == pokemon.id;
+        });
+
+        if(existingPokemonIndex == null){
+          return null;
+        }
+
+        if(existingPokemonIndex != -1){
+          return null;
+        }
+
+        pokemonList?.results.add(pokemon);
+        originalList.add(pokemon);
+        addedList.add(pokemon);
+        return pokemonList;
+
+
   }
 
 
@@ -32,6 +50,8 @@ class PokemonMemoryObject {
     if(pl == null) return;
     originalList.clear();
     originalList.addAll(pl.results);
+    originalList.addAll(addedList);
+    pokemonList?.results.addAll(originalList);
   }
 
   PokemonList? getList() {
@@ -46,7 +66,7 @@ class PokemonMemoryObject {
       return pokemonList;
     }
 
-    var list = originalList.where((element) => element.name.contains(text) || element.id.contains(text));
+    var list = originalList.where((element) => element.name.contains(text) || element.id == text);
     pokemonList?.results.clear();
     pokemonList?.results.addAll(list);
     return pokemonList;
