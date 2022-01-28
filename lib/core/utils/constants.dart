@@ -1,2 +1,2 @@
 const kUser = "USER";
-const String kBaseUrl = "https://pokeapi.co/api/v2";
+const String kBaseUrl = "https://pokeapi.co/api/v2/pokemon";

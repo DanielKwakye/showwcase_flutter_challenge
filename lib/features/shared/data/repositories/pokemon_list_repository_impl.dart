@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:showwcase_flutter_challenge/core/error/exceptions.dart';
 import 'package:showwcase_flutter_challenge/core/error/failures.dart';
 import 'package:showwcase_flutter_challenge/core/network/network_info.dart';
+import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_memory_data_source.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_remote_data_source.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
@@ -11,8 +12,13 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
 
   PokemonRemoteDataSource pokemonRemoteDataSource;
   NetworkInfo networkInfo;
+  PokemonMemoryDataSource pokemonMemoryDataSource;
 
-  PokemonListRepositoryImpl({required this.pokemonRemoteDataSource, required this.networkInfo});
+  PokemonListRepositoryImpl({
+    required this.pokemonRemoteDataSource,
+    required this.networkInfo,
+    required this.pokemonMemoryDataSource
+  });
 
   @override
   Future<Either<Failure?, PokemonList?>?>? addNewPokemon({Pokemon? pokemon}) {
@@ -35,6 +41,7 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
     try{
 
       final pokemonModelList = await pokemonRemoteDataSource.getPokemonListFromRemoteSource(offset: offset, limit: limit);
+
       if(pokemonModelList == null){
         return Left(ServerFailure());
       }

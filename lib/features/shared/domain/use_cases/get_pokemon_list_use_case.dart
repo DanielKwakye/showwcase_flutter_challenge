@@ -20,6 +20,6 @@ class GetPokemonListUseCase implements UseCase<PokemonList, Params> {
 class Params {
   final int offset;
   final int limit;
-  Params(this.offset, this.limit);
+  Params({required this.offset, required this.limit});
 
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:showwcase_flutter_challenge/core/error/exceptions.dart';
 import 'package:showwcase_flutter_challenge/core/utils/constants.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/models/pokemon_detail_model.dart';
@@ -26,7 +27,7 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
       return throw(ServerException());
     }
 
-    Uri url = Uri.parse("$kBaseUrl/berry/$id/");
+    Uri url = Uri.parse("$kBaseUrl/$id/");
 
     final response = await client.get(
       url,
@@ -41,6 +42,8 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
 
       final clientResponse = json.decode(body);
 
+      debugPrint('clientResponse $clientResponse');
+
       return PokemonDetailModel.fromJson(clientResponse);
 
     } else {
@@ -54,7 +57,7 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
   @override
   Future<PokemonListModel?> getPokemonListFromRemoteSource({int? limit, int? offset}) async {
 
-    Uri url = Uri.parse("$kBaseUrl/berry?limit=$limit&offset=$offset");
+    Uri url = Uri.parse("$kBaseUrl?limit=$limit&offset=$offset");
 
     final response = await client.get(
       url,

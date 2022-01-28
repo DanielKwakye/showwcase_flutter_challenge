@@ -10,6 +10,8 @@ import 'package:showwcase_flutter_challenge/features/auth/domain/use_cases/is_us
 import 'package:showwcase_flutter_challenge/features/auth/domain/use_cases/login_with_dummy_user_use_case.dart';
 import 'package:showwcase_flutter_challenge/features/auth/domain/use_cases/logout_dummy_user_user_case.dart';
 import 'package:showwcase_flutter_challenge/features/auth/presentation/manager/auth_user_bloc.dart';
+import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_memory_data_source.dart';
+import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_memory_object.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_remote_data_source.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/repositories/pokemon_list_repository_impl.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/repositories/pokemon_list_repository.dart';
@@ -51,7 +53,8 @@ Future<void> init() async {
   sl.registerLazySingleton<PokemonListRepository>(() =>
       PokemonListRepositoryImpl(
         pokemonRemoteDataSource: sl(),
-        networkInfo: sl()
+        networkInfo: sl(),
+        pokemonMemoryDataSource: sl()
       )
   );
   // authentication repository
@@ -63,6 +66,10 @@ Future<void> init() async {
   sl.registerLazySingleton<PokemonRemoteDataSource>(() =>
       PokemonRemoteDataSourceImpl(client: sl())
   );
+  sl.registerLazySingleton<PokemonMemoryDataSource>(() =>
+      PokemonMemoryDataSourceImpl(sl())
+  );
+  sl.registerLazySingleton(() => PokemonMemoryObject());
 
   sl.registerLazySingleton<AuthCacheDataSource>(() =>
       AuthCacheDataSourceImpl(sl()));
