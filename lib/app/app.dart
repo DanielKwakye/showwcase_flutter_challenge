@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:showwcase_flutter_challenge/app/routing/auth_guard.dart';
 import 'package:showwcase_flutter_challenge/app/routing/route.gr.dart';
@@ -10,12 +11,19 @@ import 'package:showwcase_flutter_challenge/features/shared/presentation/manager
     
 class MyApp extends StatelessWidget {
 
-  final _appRouter = AppRouter(authGuard: AuthGuard());
+  final _appRouter = AppRouter(authGuard: AuthGuard(sl()));
   MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    // Keep it at portrait
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: getPokemonBloc),
@@ -27,6 +35,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          fontFamily: 'Quicksand'
         ),
       ),
     );

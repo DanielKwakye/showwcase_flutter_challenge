@@ -4,9 +4,9 @@ import 'package:showwcase_flutter_challenge/features/shared/domain/entities/poke
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
 
 abstract class PokemonMemoryDataSource {
-  Future<PokemonList?> getPokemonListFromMemorySource({int? limit , int? offset});
+  Future<PokemonList?> getPokemonListFromMemorySource();
   Future<List<Pokemon>?> getPokemonFavoriteListFromMemorySource();
-  Future<PokemonList?> setPokemonListInMemorySource(PokemonList? pokemonList);
+  Future<PokemonList?> setPokemonListInMemorySource(PokemonList? pokemonList, {bool freshData = true});
   Future<PokemonList?> addPokemonToMemorySource(Pokemon pokemon);
   Future<PokemonList?> addPokemonToFavoriteMemorySource(Pokemon pokemon);
   Future<PokemonList?> removePokemonFavoriteMemorySource(Pokemon pokemon);
@@ -35,13 +35,13 @@ class PokemonMemoryDataSourceImpl implements PokemonMemoryDataSource {
 
 
   @override
-  Future<PokemonList?> getPokemonListFromMemorySource({int? limit, int? offset}) async {
+  Future<PokemonList?> getPokemonListFromMemorySource() async {
     return pokemonMemoryObject.getList();
   }
 
   @override
-  Future<PokemonList?> setPokemonListInMemorySource(PokemonList? pokemonList) async {
-    pokemonMemoryObject.setList(pokemonList);
+  Future<PokemonList?> setPokemonListInMemorySource(PokemonList? pokemonList, {bool freshData = true}) async {
+    pokemonMemoryObject.setList(pokemonList, freshData: freshData);
     return pokemonList;
   }
 

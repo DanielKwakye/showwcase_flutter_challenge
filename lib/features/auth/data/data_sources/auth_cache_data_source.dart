@@ -31,7 +31,8 @@ class AuthCacheDataSourceImpl implements AuthCacheDataSource{
   Future<AuthUserModel?> saveUserInLocalStorage({required String email, required String password}) async {
 
     final authUser = AuthUserModel(name: 'Dummy', email: email, password:  password);
-    final saved =  await sharedPreferences.setString(kUser, authUser.toString());
+    final encodedUser = json.encode(authUser.toJson());
+    final saved =  await sharedPreferences.setString(kUser, encodedUser);
     if(!saved){
       throw CacheException();
     }
@@ -45,7 +46,9 @@ class AuthCacheDataSourceImpl implements AuthCacheDataSource{
      if(userString == null){
        throw CacheException();
      }
-     final authUser = AuthUserModel.fromJson(json.decode(userString));
+
+     final decodedUser = json.decode(userString) as Map<String, dynamic>;
+     final authUser = AuthUserModel.fromJson(decodedUser);
      return authUser;
   }
 

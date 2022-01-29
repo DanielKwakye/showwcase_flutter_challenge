@@ -11,7 +11,7 @@ import 'package:showwcase_flutter_challenge/features/shared/domain/entities/poke
 
 /// This contract ensures that what ever client use to access the remote api with return these methods
 abstract class PokemonRemoteDataSource {
-  Future<PokemonList?> getPokemonListFromRemoteSource({int? limit , int? offset});
+  Future<PokemonList?> getPokemonListFromRemoteSource({required String url});
   Future<PokemonDetail?> getPokemonDetailRemoteSource({required Pokemon pokemon});
 }
 
@@ -25,41 +25,43 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
   @override
   Future<PokemonDetailModel?> getPokemonDetailRemoteSource({required Pokemon pokemon}) async {
 
-    final id = pokemon.id;
 
-    Uri url = Uri.parse("$kBaseUrl/$id/");
+      final id = pokemon.id;
 
-    final response = await client.get(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
+      Uri url = Uri.parse("$kBaseUrl/$id/");
 
-    if (response.statusCode == 200) {
+      final response = await client.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
 
-      final body = response.body;
+      if (response.statusCode == 200) {
 
-      final clientResponse = json.decode(body);
+        final body = response.body;
 
-      return PokemonDetailModel.fromJson(pokemon, clientResponse);
+        final clientResponse = json.decode(body);
 
-    } else {
+        return PokemonDetailModel.fromJson(pokemon, clientResponse);
 
-      throw ServerException();
+      } else {
 
-    }
+        throw ServerException();
+
+      }
+
 
   }
 
   @override
-  Future<PokemonListModel?> getPokemonListFromRemoteSource({int? limit, int? offset}) async {
+  Future<PokemonListModel?> getPokemonListFromRemoteSource({required String url}) async {
 
-    Uri url = Uri.parse("$kBaseUrl?limit=$limit&offset=$offset");
+    Uri uri = Uri.parse(url);
     print('api url: $url');
 
     final response = await client.get(
-      url,
+      uri,
       headers: {
         'Content-Type': 'application/json',
       },

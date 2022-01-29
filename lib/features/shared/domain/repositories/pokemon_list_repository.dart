@@ -8,7 +8,7 @@ import 'package:showwcase_flutter_challenge/features/shared/domain/entities/poke
 /// This facilitates unit testing
 abstract class PokemonListRepository {
   /// This contract gets the list of pokemon items
-  Future<Either<Failure?, PokemonList?>?>? getPokemonList({int? offset = 0, int? limit = 20});
+  Future<Either<Failure?, PokemonList?>?>? getPokemonList({String? url});
 
   /// This contract adds a new item to the list of pokemon items
   Future<Either<Failure?, PokemonList?>?>? addNewPokemon({Pokemon pokemon});

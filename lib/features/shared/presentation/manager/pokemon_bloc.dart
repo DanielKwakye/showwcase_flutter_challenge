@@ -35,12 +35,12 @@ class PokemonBloc extends Cubit<BlocState> {
 
 
   /// This method attempts to fetch pokemons from the pokemon API
-  void fetchPokes({int limit = 20, int offset = 0}) async {
+  void fetchPokes({String? url}) async {
 
     // Notify UI that app is fetching list of pokemons
     emit(BlocState.loadingState());
-    final either = await getPokemonListUseCase.call(Params(limit: limit, offset: offset));
-    
+    final either = await getPokemonListUseCase.call(url);
+
     either?.fold((l) {
 
       // Notify UI that there was an error whiles fetch the data from the server

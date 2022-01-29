@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:showwcase_flutter_challenge/core/error/exceptions.dart';
 import 'package:showwcase_flutter_challenge/core/error/failures.dart';
 import 'package:showwcase_flutter_challenge/core/network/network_info.dart';
+import 'package:showwcase_flutter_challenge/core/utils/constants.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_memory_data_source.dart';
 import 'package:showwcase_flutter_challenge/features/shared/data/data_sources/pokemon_remote_data_source.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
@@ -38,27 +39,49 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
 
   /// this method gets pokemons from the api and set it to the remote source
   @override
-  Future<Either<Failure?, PokemonList?>?>? getPokemonList({int? offset, int? limit}) async {
-    var isConnected = await networkInfo.isConnected;
-    if(isConnected == null || !isConnected){
-      return Left(ServerFailure());
-    }
+  Future<Either<Failure?, PokemonList?>?>? getPokemonList({String? url}) async {
+
 
     try{
 
+      var isConnected = await networkInfo.isConnected;
+      if(isConnected == null || !isConnected){
+        return Left(ServerFailure());
+      }
+
+      // if user is not null, it mean we're showing the initial list
+      final bool freshData = url != null;
+
+      if(url == null){
+
+        final PokemonList? pokemonList = await pokemonMemoryDataSource.getPokemonListFromMemorySource();
+        if(pokemonList == null){
+          return Left(ServerFailure());
+        }
+
+        final String? nextUrl = pokemonList.next;
+
+        url = kInitialUrl;
+        if(nextUrl != null){
+          url = nextUrl;
+        }
+      }
+
       // fetch pokemon from api
-      final pokemonModelList = await pokemonRemoteDataSource.getPokemonListFromRemoteSource(offset: offset, limit: limit);
+      final pokemonModelList = await pokemonRemoteDataSource.getPokemonListFromRemoteSource(url: url);
 
       if(pokemonModelList == null){
         return Left(ServerFailure());
       }
 
       // set pokemon to remote souce
-      pokemonMemoryDataSource.setPokemonListInMemorySource(pokemonModelList);
-      return Right(await pokemonMemoryDataSource.getPokemonListFromMemorySource(limit: limit, offset: offset));
+      pokemonMemoryDataSource.setPokemonListInMemorySource(pokemonModelList, freshData: freshData);
+      return Right(await pokemonMemoryDataSource.getPokemonListFromMemorySource());
 
-    }on ServerException{
+    }catch(e){
+
       return Left(ServerFailure());
+
     }
   }
 
@@ -71,9 +94,9 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
 
   @override
   Future<Either<Failure?, PokemonDetail?>?>? getPokemonDetail({required Pokemon pokemon}) async {
-    final result = await pokemonRemoteDataSource.getPokemonDetailRemoteSource(pokemon: pokemon);
 
     try{
+      final result = await pokemonRemoteDataSource.getPokemonDetailRemoteSource(pokemon: pokemon);
           return Right(result);
         }on ServerException {
             return Left(ServerFailure());

@@ -3,6 +3,7 @@ import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
 import 'package:showwcase_flutter_challenge/core/utils/colors.dart';
 import 'package:showwcase_flutter_challenge/core/utils/enums.dart';
 import 'package:showwcase_flutter_challenge/core/utils/helpers.dart';
+import 'package:showwcase_flutter_challenge/core/utils/images.dart';
 import 'package:showwcase_flutter_challenge/core/utils/injector.dart';
 import 'package:showwcase_flutter_challenge/core/utils/widget_view.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
@@ -82,7 +83,11 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
                           borderRadius: BorderRadius.circular(10)
                       ),
                       child: ListTile(
-                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id,),
+                            errorBuilder: (ctx, t, r) {
+                          return Image.asset(appLogo);
+                        }),
+                        ),
                         title: const Text('Base experience'),
                         trailing: Text("${bloc.data.baseExperience}"),
                       ),
@@ -96,7 +101,9 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
                           borderRadius: BorderRadius.circular(10)
                       ),
                       child: ListTile(
-                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id), errorBuilder: (ctx, t, r) {
+                          return Image.asset(appLogo);
+                        }), ),
                         title: const Text('Weight'),
                         trailing: Text("${bloc.data.weight}"),
                       ),
@@ -114,7 +121,9 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
                           borderRadius: BorderRadius.circular(10)
                       ),
                       child: ListTile(
-                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id),errorBuilder: (ctx, t, r) {
+                          return Image.asset(appLogo);
+                        }),),
                         title: Text(e.ability.name),
                         subtitle: Text("Is hidden: ${e.isHidden}"),
                         trailing: Text("slot: ${e.slot}"),
@@ -134,7 +143,9 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
                           borderRadius: BorderRadius.circular(10)
                       ),
                       child: ListTile(
-                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id), errorBuilder: (ctx, t, r) {
+                          return Image.asset(appLogo);
+                        }),),
                         title: Text(e.name),
                         subtitle: Text(e.url),
                       ),

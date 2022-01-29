@@ -116,7 +116,9 @@ class _HomePageView extends WidgetView<HomePage, _HomePageController> {
                     SliverList(
                         delegate: SliverChildBuilderDelegate(
                       (ctx, i) {
+
                         return Container(
+                          key: ValueKey(bloc.data.results[i].id),
                           margin: const EdgeInsets.only(
                               left: 15, right: 15, top: 5, bottom: 5),
                           padding: const EdgeInsets.symmetric(vertical: 5),
@@ -236,6 +238,9 @@ class _HomePageController extends State<HomePage> with FormMixin {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   final _pokeBloc = getPokemonBloc;
+  int present = 0;
+  int perPage = 20;
+  List<Pokemon> items = [];
 
   @override
   Widget build(BuildContext context) => _HomePageView(this);
@@ -248,10 +253,15 @@ class _HomePageController extends State<HomePage> with FormMixin {
   void initState() {
     super.initState();
     onWidgetBindingComplete(
-        onComplete: () =>
-            context.read<PokemonBloc>().fetchPokes(limit: 20, offset: 0));
+        onComplete: ()  async {
+          context.read<PokemonBloc>().fetchPokes(url: kInitialUrl);
+
+        });
   }
 
+
+
+  // This method adds or removes user from favorites
   void addToFavoriteTapped(Pokemon pokemon) {
     if (pokemon.isFavorite) {
       context.read<PokemonBloc>().removePokemonFromFavorite(pokemon);
@@ -260,15 +270,16 @@ class _HomePageController extends State<HomePage> with FormMixin {
     }
   }
 
+
   void _onRefresh() async {
-    // monitor network fetch
-    context.read<PokemonBloc>().fetchPokes(limit: 20, offset: 0);
-    // if failed,use refreshFailed()
-    _refreshController.refreshCompleted();
+    context.read<PokemonBloc>().fetchPokes(url: kInitialUrl);
+    _refreshController.refreshCompleted(resetFooterState: true);
   }
 
   void _onLoading() async {
     // monitor network fetch
+
+    context.read<PokemonBloc>().fetchPokes();
     _refreshController.loadComplete();
   }
 
@@ -286,7 +297,7 @@ class _HomePageController extends State<HomePage> with FormMixin {
     if (either == null) return;
     if (either.isRight()) {
       showSnackBar(ctx, "Poke item added");
-      context.read<PokemonBloc>().fetchPokes(limit: 100, offset: 0);
+      context.read<PokemonBloc>().fetchPokes();
       Navigator.of(ctx).pop();
     }
   }

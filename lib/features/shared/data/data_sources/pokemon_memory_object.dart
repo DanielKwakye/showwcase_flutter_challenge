@@ -1,4 +1,5 @@
 import 'package:dartz/dartz_streaming.dart';
+import 'package:showwcase_flutter_challenge/core/utils/constants.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
 
@@ -8,6 +9,12 @@ class PokemonMemoryObject {
   List<Pokemon> addedList = [];
   late PokemonList? pokemonList;
 
+
+  PokemonMemoryObject(){
+    pokemonList  = PokemonList(count: 0, results: []);
+  }
+
+  get offset => null;
 
   PokemonList? addListItem(Pokemon pokemon){
     // check if there is an existing pokemon with same ID
@@ -45,14 +52,23 @@ class PokemonMemoryObject {
     return pokemonList;
   }
 
-  void setList(PokemonList? pl) {
-    pokemonList = pl;
+  void setList(PokemonList? pl, {bool freshData = true}) {
     if(pl == null) return;
 
-    originalList.clear();
+    if(freshData){
+      pokemonList?.results.clear();
+      originalList.clear();
+    }
+
+    // originalList.clear();
     originalList.addAll(pl.results);
-    originalList.addAll(addedList);
-    pokemonList?.results.clear();
+    if(freshData){
+      originalList.addAll(addedList);
+    }
+
+
+    pokemonList?.next = pl.next;
+    pokemonList?.previous = pl.previous;
     pokemonList?.results.addAll(originalList);
 
   }
