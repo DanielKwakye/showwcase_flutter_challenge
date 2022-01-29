@@ -26,7 +26,6 @@ class PokemonDetailModel extends PokemonDetail {
      final formsJson = json['forms'] as List;
 
      List<Ability> abilities = abilitiesJson.map((e) => AbilityModel.fromJson(e)).toList();
-
      List<NameUrl> forms = formsJson.map((e) => NameUrlModel.fromJson(e)).toList();
 
      return PokemonDetailModel(
@@ -73,7 +72,7 @@ class NameUrlModel extends NameUrl {
   NameUrlModel({required url, required name}): super(url: url, name: name);
 
   factory NameUrlModel.fromJson(Map<String, dynamic> json){
-    return NameUrlModel(url: json['name'] as String, name: json['url'] as String);
+    return NameUrlModel(url: json['url'] as String, name: json['name'] as String);
   }
 
   @override

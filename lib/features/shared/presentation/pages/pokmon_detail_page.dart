@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
 import 'package:showwcase_flutter_challenge/core/utils/colors.dart';
+import 'package:showwcase_flutter_challenge/core/utils/enums.dart';
 import 'package:showwcase_flutter_challenge/core/utils/helpers.dart';
 import 'package:showwcase_flutter_challenge/core/utils/injector.dart';
 import 'package:showwcase_flutter_challenge/core/utils/widget_view.dart';
@@ -36,108 +37,133 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
         title: Text(widget.pokemon.name),
       ),
       body:
-      BlocBuilder(
-      bloc: state._pokemonBloc,
-      builder: (ctx, bloc){
+      Container(
+        color: backgroundGray,
+        child: BlocBuilder(
+        bloc: state._pokemonBloc,
+        builder: (ctx, bloc){
 
-        // loading state
-        if(bloc is LoadingState) {
-          return const AppListTileShimmer();
-        }
+          // loading state
+          if(bloc is LoadingState) {
+            return const AppListTileShimmer();
+          }
 
-        // loading state
-        if(bloc is ErrorState){
-          return Container(
-            margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            decoration: BoxDecoration(
-                color:  Colors.white,
-                borderRadius: BorderRadius.circular(10)
-            ),
-            child: const ListTile(
-              leading:  CircleAvatar(child: Icon(Icons.info_outline),),
-              title:  Text('Unable to load pokemon detail. This may be due to the fact that this pockmon was generated locally and does not exist on the server'
-                , textAlign: TextAlign.center,
+          // loading state
+          if(bloc is ErrorState){
+            return Container(
+              margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              decoration: BoxDecoration(
+                  color:  Colors.white,
+                  borderRadius: BorderRadius.circular(10)
               ),
-            ),
-          );
-        }
-
-        // success state
-        if(bloc is SuccessState<PokemonDetail>){
-          return AnimatedColumnWidget(
-              children: [
-                // pokemon
-                Container(
-                  margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  decoration: BoxDecoration(
-                      color:  Colors.white,
-                      borderRadius: BorderRadius.circular(10)
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
-                    title: Text(bloc.data.name),
-                    subtitle: Text(bloc.data.url),
-                  ),
+              child: const ListTile(
+                leading:  CircleAvatar(child: Icon(Icons.info_outline),),
+                title:  Text('Unable to load pokemon detail. This may be due to the fact that this pockmon was generated locally and does not exist on the server'
+                  , textAlign: TextAlign.center,
                 ),
+              ),
+            );
+          }
 
-                // detail
+          // success state
+          if(bloc is SuccessState<PokemonDetail>){
+            return SingleChildScrollView(
+              child: AnimatedColumnWidget(
+                  animateType: AnimateType.slideUp,
+                  children: [
+                    // pokemon
+                    Container(
+                      margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      decoration: BoxDecoration(
+                          color:  Colors.white,
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: ListTile(
+                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                        title: Text(bloc.data.name),
+                        subtitle: const Text('name'),
+                      ),
+                    ),
 
-                Container(
-                  margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  decoration: BoxDecoration(
-                      color:  Colors.white,
-                      borderRadius: BorderRadius.circular(10)
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
-                    title: Text("${bloc.data.baseExperience}"),
-                    subtitle: const Text('Base experience'),
-                  ),
-                ),
+                    // detail
 
-                Container(
-                  margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  decoration: BoxDecoration(
-                      color:  Colors.white,
-                      borderRadius: BorderRadius.circular(10)
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
-                    title: Text("${bloc.data.weight}"),
-                    subtitle: const Text('Weight'),
-                  ),
-                ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      decoration: BoxDecoration(
+                          color:  Colors.white,
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: ListTile(
+                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                        title: const Text('Base experience'),
+                        trailing: Text("${bloc.data.baseExperience}"),
+                      ),
+                    ),
 
-                const Divider(),
-                const Text('Abilities', style: TextStyle(fontSize: 20),),
-                const Divider(),
+                    Container(
+                      margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      decoration: BoxDecoration(
+                          color:  Colors.white,
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: ListTile(
+                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                        title: const Text('Weight'),
+                        trailing: Text("${bloc.data.weight}"),
+                      ),
+                    ),
 
-                ...bloc.data.abilities.map((e) => Container(
-                  margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  decoration: BoxDecoration(
-                      color:  Colors.white,
-                      borderRadius: BorderRadius.circular(10)
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
-                    title: Text(e.ability.name),
-                    subtitle: Text("Is hidden: ${e.isHidden}"),
-                    trailing: Text("${e.slot}"),
-                  ),
-                ),)
+                    const Divider(),
+                    const Text('Abilities', style: TextStyle(fontSize: 20),),
+                    const Divider(),
+
+                    ...bloc.data.abilities.map((e) => Container(
+                      margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      decoration: BoxDecoration(
+                          color:  Colors.white,
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: ListTile(
+                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                        title: Text(e.ability.name),
+                        subtitle: Text("Is hidden: ${e.isHidden}"),
+                        trailing: Text("slot: ${e.slot}"),
+                      ),
+                    ),),
+
+              //      Form /////
+                    const Divider(),
+                    const Text('Form', style: TextStyle(fontSize: 20),),
+                    const Divider(),
+
+                    ...bloc.data.form.map((e) => Container(
+                      margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      decoration: BoxDecoration(
+                          color:  Colors.white,
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: ListTile(
+                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                        title: Text(e.name),
+                        subtitle: Text(e.url),
+                      ),
+                    ),)
 
 
-          ]);
-        }
+              ]),
+            );
+          }
 
-        return Container();
+          return Container();
 
-      },)
+        },),
+      )
 
     );
   }
