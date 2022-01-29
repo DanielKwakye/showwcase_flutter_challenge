@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
+import 'package:showwcase_flutter_challenge/core/utils/colors.dart';
 import 'package:showwcase_flutter_challenge/core/utils/helpers.dart';
+import 'package:showwcase_flutter_challenge/core/utils/injector.dart';
 import 'package:showwcase_flutter_challenge/core/utils/widget_view.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_detail.dart';
+import 'package:showwcase_flutter_challenge/features/shared/presentation/manager/pokemon_bloc.dart';
+import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/animated_column_widget.dart';
+import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/list_tile_shimmer.dart';
 
 class PokemonDetailPage extends StatefulWidget {
 
@@ -27,19 +35,110 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
       appBar: AppBar(
         title: Text(widget.pokemon.name),
       ),
-      body: Container(
-        margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        decoration: BoxDecoration(
-            color:  Colors.white,
-            borderRadius: BorderRadius.circular(10)
-        ),
-        child: ListTile(
-          leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
-          title: Text(widget.pokemon.name),
-          subtitle: Text(widget.pokemon.url),
-        ),
-      ),
+      body:
+      BlocBuilder(
+      bloc: state._pokemonBloc,
+      builder: (ctx, bloc){
+
+        // loading state
+        if(bloc is LoadingState) {
+          return const AppListTileShimmer();
+        }
+
+        // loading state
+        if(bloc is ErrorState){
+          return Container(
+            margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            decoration: BoxDecoration(
+                color:  Colors.white,
+                borderRadius: BorderRadius.circular(10)
+            ),
+            child: const ListTile(
+              leading:  CircleAvatar(child: Icon(Icons.info_outline),),
+              title:  Text('Unable to load pokemon detail. This may be due to the fact that this pockmon was generated locally and does not exist on the server'
+                , textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+
+        // success state
+        if(bloc is SuccessState<PokemonDetail>){
+          return AnimatedColumnWidget(
+              children: [
+                // pokemon
+                Container(
+                  margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  decoration: BoxDecoration(
+                      color:  Colors.white,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                    title: Text(bloc.data.name),
+                    subtitle: Text(bloc.data.url),
+                  ),
+                ),
+
+                // detail
+
+                Container(
+                  margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  decoration: BoxDecoration(
+                      color:  Colors.white,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                    title: Text("${bloc.data.baseExperience}"),
+                    subtitle: const Text('Base experience'),
+                  ),
+                ),
+
+                Container(
+                  margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  decoration: BoxDecoration(
+                      color:  Colors.white,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                    title: Text("${bloc.data.weight}"),
+                    subtitle: const Text('Weight'),
+                  ),
+                ),
+
+                const Divider(),
+                const Text('Abilities', style: TextStyle(fontSize: 20),),
+                const Divider(),
+
+                ...bloc.data.abilities.map((e) => Container(
+                  margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  decoration: BoxDecoration(
+                      color:  Colors.white,
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
+                    title: Text(e.ability.name),
+                    subtitle: Text("Is hidden: ${e.isHidden}"),
+                    trailing: Text("${e.slot}"),
+                  ),
+                ),)
+
+
+          ]);
+        }
+
+        return Container();
+
+      },)
+
     );
   }
 }
@@ -49,6 +148,19 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
 ////////////////////////////////////////////////////////
 
 class _PokemonDetailPageController extends State<PokemonDetailPage> {
+
+  final _pokemonBloc = getPokemonBloc;
+
   @override
   Widget build(BuildContext context) => _PokemonDetailPageView(this);
+
+  @override
+  void initState() {
+
+    super.initState();
+    onWidgetBindingComplete(onComplete: (){
+      _pokemonBloc.getPokeDetail(widget.pokemon);
+    });
+  }
+
 }

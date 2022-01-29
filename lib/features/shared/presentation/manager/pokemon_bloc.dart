@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:showwcase_flutter_challenge/core/error/failures.dart';
 import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
+import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_detail.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/add_new_pokemon_use_case.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/use_cases/add_pokemon_to_favorite_use_case.dart';
@@ -57,7 +58,33 @@ class PokemonBloc extends Cubit<BlocState> {
     });
   }
 
+  /// This method gets a poke detail from the server
+  /// This emits Failure or PokemonDetail object
+  void getPokeDetail(Pokemon pokemon) async {
+
+    emit(BlocState.loadingState());
+    final either = await getPokemonLDetailUseCase.call(pokemon);
+
+    either?.fold((l) {
+      // Notify UI that there was an error whiles checking the server
+      emit(BlocState<String>.errorState(failure: 'Unable to fetch detail'));
+    }, (r) {
+
+      if (r == null) {
+        emit(BlocState<String>.errorState(failure: 'Unable to fetch detail'));
+      } else {
+        // Notify UI of the pokemon data received from the server
+
+        emit(BlocState<PokemonDetail>.successState(data: r));
+
+      }
+
+    });
+
+  }
+
   /// This method  searches from the pokemon memory source
+  /// This method emits [PokemonList] when search is found
   void searchPokemon(String text) async {
 
     // Notify UI that app is fetching list of pokemons

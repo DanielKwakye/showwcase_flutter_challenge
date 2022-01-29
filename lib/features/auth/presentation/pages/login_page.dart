@@ -110,7 +110,6 @@ class _LoginPageView extends WidgetView<LoginPage, _LoginPageController> {
 class _LoginPageController extends State<LoginPage> with FormMixin {
 
   String? email, password;
-  // final _authBloc = AuthUserBloc(logoutDummyUserUseCase: sl(), loginWithDummyUserUseCase: sl(), isUserAuthenticatedUseCase: sl());
 
 
   @override
@@ -127,7 +126,7 @@ class _LoginPageController extends State<LoginPage> with FormMixin {
     // check if usr has successfully logged in, then navigate user to home screen
     if(either != null && either.isRight()){
       showSnackBar(context, "Login successful");
-      context.router.push(const HomePageRoute());
+      context.router.replace(const HomePageRoute());
     }
 
   }

@@ -238,15 +238,7 @@ class _HomePageController extends State<HomePage> with FormMixin {
   String? id, name;
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  final _pokeBloc = PokemonBloc(
-    getPokemonListUseCase: sl(),
-    addNewPokemonUseCase: sl(),
-    addPokemonToFavoriteUseCase: sl(),
-    removePokemonFromFavoriteUseCase: sl(),
-    searchPokemonListUseCase: sl(),
-    getPokemonLDetailUseCase: sl(),
-    getFavoriteListUseCase: sl()
-  );
+  final _pokeBloc = getPokemonBloc;
 
   @override
   Widget build(BuildContext context) => _HomePageView(this);

@@ -67,9 +67,14 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
   }
 
   @override
-  Future<Either<Failure?, PokemonDetail?>?>? getPokemonDetail({Pokemon? pokemon}) async {
-    // TODO: implement getPokemonDetail
-    throw UnimplementedError();
+  Future<Either<Failure?, PokemonDetail?>?>? getPokemonDetail({required Pokemon pokemon}) async {
+    final result = await pokemonRemoteDataSource.getPokemonDetailRemoteSource(pokemon: pokemon);
+
+    try{
+          return Right(result);
+        }on ServerException {
+            return Left(ServerFailure());
+        }
   }
 
   @override

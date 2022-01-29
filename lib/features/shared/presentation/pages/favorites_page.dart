@@ -130,15 +130,7 @@ class _FavoritesPageView extends WidgetView<FavoritesPage, _FavoritesPageControl
 
 class _FavoritesPageController extends State<FavoritesPage> {
 
-  final _pokeman =  PokemonBloc(
-    getPokemonListUseCase: sl(),
-    addNewPokemonUseCase: sl(),
-    addPokemonToFavoriteUseCase: sl(),
-    removePokemonFromFavoriteUseCase: sl(),
-    searchPokemonListUseCase: sl(),
-    getPokemonLDetailUseCase: sl(),
-     getFavoriteListUseCase: sl()
-  );
+  final _pokeman =  getPokemonBloc;
 
   @override
   void initState() {

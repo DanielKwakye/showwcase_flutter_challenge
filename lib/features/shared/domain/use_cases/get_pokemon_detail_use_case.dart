@@ -11,8 +11,8 @@ class GetPokemonLDetailUseCase implements UseCase<PokemonDetail, Pokemon> {
   GetPokemonLDetailUseCase(this.pokemonListRepository);
 
   @override
-  Future<Either<Failure?, PokemonDetail?>?>? call(Pokemon params) {
-
+  Future<Either<Failure?, PokemonDetail?>?>? call(Pokemon params) async {
+     return await pokemonListRepository.getPokemonDetail(pokemon: params);
   }
 
 }
