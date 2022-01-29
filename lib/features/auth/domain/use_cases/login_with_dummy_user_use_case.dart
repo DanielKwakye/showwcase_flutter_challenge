@@ -6,7 +6,7 @@ import 'package:showwcase_flutter_challenge/features/auth/domain/entities/auth_u
 import 'package:showwcase_flutter_challenge/features/auth/domain/repositories/auth_user_repository.dart';
 
 /// An implementation of Login with dummy user. to be called by the presentation layer of
-class LoginWithDummyUserUseCase implements UseCase<AuthUser, Params> {
+class LoginWithDummyUserUseCase implements UseCase<AuthUser, LoginParams> {
   AuthUserRepository authUserRepository;
   LoginWithDummyUserUseCase({required this.authUserRepository});
 
@@ -17,11 +17,11 @@ class LoginWithDummyUserUseCase implements UseCase<AuthUser, Params> {
 
 }
 
-class Params extends Equatable {
+class LoginParams extends Equatable {
   final String email;
   final String password;
 
-  const Params({required this.email, required this.password });
+  const LoginParams({required this.email, required this.password });
 
   @override
   List<Object?> get props => [];

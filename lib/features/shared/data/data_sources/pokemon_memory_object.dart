@@ -34,8 +34,8 @@ class PokemonMemoryObject {
 
 
   PokemonList? addPokemonToFavorite(Pokemon pokemon){
-    final p = pokemonList?.results.firstWhere((element) => element.id == pokemon.id, orElse: () => pokemon);
-    p?.isFavorite = true;
+    final index = pokemonList?.results.indexWhere((element) => element.id == pokemon.id);
+    pokemonList?.results[index!].isFavorite = true;
     return pokemonList;
   }
 
@@ -49,13 +49,20 @@ class PokemonMemoryObject {
     pokemonList = pl;
     if(pl == null) return;
     originalList.clear();
+    print("pl.results: ${pl.results}");
     originalList.addAll(pl.results);
-    originalList.addAll(addedList);
+    // originalList.addAll(addedList);
     pokemonList?.results.addAll(originalList);
   }
 
   PokemonList? getList() {
     return pokemonList;
+  }
+
+  List<Pokemon>? getFavoriteList() {
+    final list = pokemonList?.results.where((element) => element.isFavorite == true).toList();
+    print("list: $list");
+    return list;
   }
 
   PokemonList? searchList(String text) {

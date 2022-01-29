@@ -24,4 +24,7 @@ abstract class PokemonListRepository {
 
   /// This contract gets the pokemon detail
   Future<Either<Failure?, PokemonDetail?>?>? getPokemonDetail({Pokemon pokemon});
+
+  /// This contract gets the pokemon detail
+  Future<Either<Failure?, List<Pokemon>?>?>? getFavoriteList();
 }

@@ -78,4 +78,10 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
     return Right(result);
   }
 
+  @override
+  Future<Either<Failure?, List<Pokemon>?>?>? getFavoriteList() async {
+    final result = await pokemonMemoryDataSource.getPokemonFavoriteListFromMemorySource();
+    return Right(result);
+  }
+
 }

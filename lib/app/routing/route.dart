@@ -1,3 +1,4 @@
+import 'package:showwcase_flutter_challenge/app/routing/auth_guard.dart';
 import 'package:showwcase_flutter_challenge/features/auth/presentation/pages/login_page.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/pages/favorites_page.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/pages/home_page.dart';
@@ -10,7 +11,7 @@ import 'package:showwcase_flutter_challenge/features/shared/presentation/pages/p
 /// This auto router automatically generates routes for every Page added
 @AdaptiveAutoRouter(
     routes: <AutoRoute>[
-      AutoRoute(page: HomePage, initial: true),
+      AutoRoute(page: HomePage, initial: true, guards: [AuthGuard]),
       AutoRoute(page: PokemonDetailPage),
       AutoRoute(page: FavoritesPage),
       AutoRoute(page: LoginPage),

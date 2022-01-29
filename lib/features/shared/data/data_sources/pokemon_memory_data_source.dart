@@ -5,6 +5,7 @@ import 'package:showwcase_flutter_challenge/features/shared/domain/entities/poke
 
 abstract class PokemonMemoryDataSource {
   Future<PokemonList?> getPokemonListFromMemorySource({int? limit , int? offset});
+  Future<List<Pokemon>?> getPokemonFavoriteListFromMemorySource();
   Future<PokemonList?> setPokemonListInMemorySource(PokemonList? pokemonList);
   Future<PokemonList?> addPokemonToMemorySource(Pokemon pokemon);
   Future<PokemonList?> addPokemonToFavoriteMemorySource(Pokemon pokemon);
@@ -47,6 +48,11 @@ class PokemonMemoryDataSourceImpl implements PokemonMemoryDataSource {
   @override
   Future<PokemonList?> searchPokemonListFromMemorySource(String text) async {
     return pokemonMemoryObject.searchList(text);
+  }
+
+  @override
+  Future<List<Pokemon>?> getPokemonFavoriteListFromMemorySource() async {
+    return pokemonMemoryObject.getFavoriteList();
   }
 
 }

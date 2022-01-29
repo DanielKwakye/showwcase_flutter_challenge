@@ -12,10 +12,11 @@
 
 import 'package:auto_route/auto_route.dart' as _i5;
 import 'package:flutter/material.dart' as _i6;
+import 'package:showwcase_flutter_challenge/app/routing/auth_guard.dart' as _i7;
 import 'package:showwcase_flutter_challenge/features/auth/presentation/pages/login_page.dart'
     as _i4;
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart'
-    as _i7;
+    as _i8;
 import 'package:showwcase_flutter_challenge/features/shared/presentation/pages/favorites_page.dart'
     as _i3;
 import 'package:showwcase_flutter_challenge/features/shared/presentation/pages/home_page.dart'
@@ -24,8 +25,12 @@ import 'package:showwcase_flutter_challenge/features/shared/presentation/pages/p
     as _i2;
 
 class AppRouter extends _i5.RootStackRouter {
-  AppRouter([_i6.GlobalKey<_i6.NavigatorState>? navigatorKey])
+  AppRouter(
+      {_i6.GlobalKey<_i6.NavigatorState>? navigatorKey,
+      required this.authGuard})
       : super(navigatorKey);
+
+  final _i7.AuthGuard authGuard;
 
   @override
   final Map<String, _i5.PageFactory> pagesMap = {
@@ -45,13 +50,13 @@ class AppRouter extends _i5.RootStackRouter {
     },
     LoginPageRoute.name: (routeData) {
       return _i5.AdaptivePage<dynamic>(
-          routeData: routeData, child: _i4.LoginPage());
+          routeData: routeData, child: const _i4.LoginPage());
     }
   };
 
   @override
   List<_i5.RouteConfig> get routes => [
-        _i5.RouteConfig(HomePageRoute.name, path: '/'),
+        _i5.RouteConfig(HomePageRoute.name, path: '/', guards: [authGuard]),
         _i5.RouteConfig(PokemonDetailPageRoute.name,
             path: '/pokemon-detail-page'),
         _i5.RouteConfig(FavoritesPageRoute.name, path: '/favorites-page'),
@@ -71,7 +76,7 @@ class HomePageRoute extends _i5.PageRouteInfo<void> {
 /// [_i2.PokemonDetailPage]
 class PokemonDetailPageRoute
     extends _i5.PageRouteInfo<PokemonDetailPageRouteArgs> {
-  PokemonDetailPageRoute({required _i7.Pokemon pokemon, _i6.Key? key})
+  PokemonDetailPageRoute({required _i8.Pokemon pokemon, _i6.Key? key})
       : super(PokemonDetailPageRoute.name,
             path: '/pokemon-detail-page',
             args: PokemonDetailPageRouteArgs(pokemon: pokemon, key: key));
@@ -82,7 +87,7 @@ class PokemonDetailPageRoute
 class PokemonDetailPageRouteArgs {
   const PokemonDetailPageRouteArgs({required this.pokemon, this.key});
 
-  final _i7.Pokemon pokemon;
+  final _i8.Pokemon pokemon;
 
   final _i6.Key? key;
 

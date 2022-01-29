@@ -10,6 +10,7 @@ import 'package:showwcase_flutter_challenge/core/utils/helpers.dart';
 import 'package:showwcase_flutter_challenge/core/utils/images.dart';
 import 'package:showwcase_flutter_challenge/core/utils/injector.dart';
 import 'package:showwcase_flutter_challenge/core/utils/widget_view.dart';
+import 'package:showwcase_flutter_challenge/features/auth/presentation/manager/auth_user_bloc.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/manager/pokemon_bloc.dart';
@@ -72,8 +73,7 @@ class _HomePageView extends WidgetView<HomePage, _HomePageController> {
                     pinned: true,
                     actions: [
                       IconButton(
-                          onPressed: () =>
-                              context.router.push(const LoginPageRoute()),
+                          onPressed: () => state.logout(),
                           icon: const Icon(Icons.logout)),
                       IconButton(
                           onPressed: () =>
@@ -245,6 +245,7 @@ class _HomePageController extends State<HomePage> with FormMixin {
     removePokemonFromFavoriteUseCase: sl(),
     searchPokemonListUseCase: sl(),
     getPokemonLDetailUseCase: sl(),
+    getFavoriteListUseCase: sl()
   );
 
   @override
@@ -298,5 +299,23 @@ class _HomePageController extends State<HomePage> with FormMixin {
       context.read<PokemonBloc>().fetchPokes(limit: 100, offset: 0);
       Navigator.of(ctx).pop();
     }
+  }
+
+  void logout()  {
+
+    showHandyConfirmDialog(context, content: "You will be logged out of this account", okTapped: () async {
+
+      final either = await context.read<AuthUserBloc>().logoutUser();
+      // successful logout
+      if(either != null && either.isRight()){
+        context.router.replace(const LoginPageRoute());
+        return;
+      }
+
+      // this code would not get executed if user logout was unsuccessful
+      showSnackBar(context, 'unable to user logged out');
+
+    });
+
   }
 }

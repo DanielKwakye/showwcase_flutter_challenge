@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showwcase_flutter_challenge/core/error/exceptions.dart';
 import 'package:showwcase_flutter_challenge/core/error/failures.dart';
 import 'package:showwcase_flutter_challenge/core/utils/constants.dart';
 import 'package:showwcase_flutter_challenge/features/auth/data/models/auth_user_model.dart';
@@ -10,10 +11,9 @@ import 'package:showwcase_flutter_challenge/features/auth/domain/entities/auth_u
 /// Hence SharedPreference or any local caching system can be used without affecting the app cache structure
 abstract class AuthCacheDataSource {
 
-  Future<Either<Failure?, AuthUserModel?>> getUserFromLocalStorage();
-  Future<Either<Failure?, AuthUser?>> saveUserToLocalStorage(AuthUserModel authUserModel);
-  Future<bool?> removeUserFromStorage();
-  Future<bool?> isUserInLocalStorage();
+  Future<AuthUserModel?> saveUserInLocalStorage({required String email, required String password});
+  Future<bool?> removeUserFromLocalStorage();
+  Future<AuthUser?> isUserInLocalStorage();
 
 }
 
@@ -28,38 +28,37 @@ class AuthCacheDataSourceImpl implements AuthCacheDataSource{
   AuthCacheDataSourceImpl(this.sharedPreferences);
 
   @override
-  Future<Either<Failure?, AuthUserModel?>> getUserFromLocalStorage() async {
+  Future<AuthUserModel?> saveUserInLocalStorage({required String email, required String password}) async {
 
-    final userString =  sharedPreferences.getString(kUser);
-    if(userString == null){
-      return Left(CacheFailure());
-    }
-    return Right(AuthUserModel.fromJson(json.decode(userString)));
-  }
-
-  @override
-  Future<bool?> isUserInLocalStorage() async {
-    return sharedPreferences.containsKey(kUser);
-  }
-
-  @override
-  Future<bool?> removeUserFromStorage() async {
-   return sharedPreferences.clear();
-  }
-
-  @override
-  Future<Either<Failure?, AuthUser?>> saveUserToLocalStorage(AuthUserModel authUserModel) async {
-    removeUserFromStorage();
-    final userToJson = authUserModel.toJson();
-
-    final saved =  await sharedPreferences.setString(kUser, json.encode(userToJson));
+    final authUser = AuthUserModel(name: 'Dummy', email: email, password:  password);
+    final saved =  await sharedPreferences.setString(kUser, authUser.toString());
     if(!saved){
-      return Left(CacheFailure());
+      throw CacheException();
     }
-    final AuthUser authUser = authUserModel;
-    return Right(authUser);
+
+    return authUser;
   }
 
+  @override
+  Future<AuthUser?> isUserInLocalStorage() async {
+     final userString =  sharedPreferences.getString(kUser);
+     if(userString == null){
+       throw CacheException();
+     }
+     final authUser = AuthUserModel.fromJson(json.decode(userString));
+     return authUser;
+  }
+
+  @override
+  Future<bool?> removeUserFromLocalStorage() async {
+   final removed = await sharedPreferences.clear();
+   if(!removed){
+     throw CacheException();
+   }
+
+   return removed;
+
+  }
 
   
 }

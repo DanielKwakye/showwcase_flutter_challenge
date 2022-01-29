@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:showwcase_flutter_challenge/app/routing/route.gr.dart';
 import 'package:showwcase_flutter_challenge/core/mixin/form_mixin.dart';
 import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
 import 'package:showwcase_flutter_challenge/core/utils/colors.dart';
 import 'package:showwcase_flutter_challenge/core/utils/enums.dart';
+import 'package:showwcase_flutter_challenge/core/utils/helpers.dart';
+import 'package:showwcase_flutter_challenge/core/utils/injector.dart';
 import 'package:showwcase_flutter_challenge/core/utils/widget_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:showwcase_flutter_challenge/features/auth/presentation/manager/auth_user_bloc.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/manager/pokemon_bloc.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/animated_column_widget.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/app_rounded_button.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/app_text_field.dart';
+import 'package:auto_route/auto_route.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -47,14 +52,20 @@ class _LoginPageView extends WidgetView<LoginPage, _LoginPageController> {
                       borderRadius: BorderRadius.circular(10)
                   ),
                   child: BlocBuilder(
-                      bloc: context.read<PokemonBloc>(),
+                      bloc: context.read<AuthUserBloc>(),
                       builder: (ctx, bloc) {
                         return Form(child: Container(
                           padding: const EdgeInsets.all(20),
                           child: AnimatedColumnWidget(
                             children: <Widget>[
-                              const Text('Login into the app', style: TextStyle(fontSize: 22),),
+                              const Text('Login as a dummy user', style: TextStyle(fontSize: 22),),
+                              const SizedBox(height: 20,),
+                              const Text('email: user@showwcase.com \n password: 123456 ', textAlign: TextAlign.center,),
                               const Divider(),
+                              const SizedBox(height: 20,),
+                              if (bloc is ErrorState<String>)
+                                 Text(bloc.failure, style: const TextStyle(color: Colors.red), textAlign: TextAlign.center),
+                              if (bloc is ErrorState)
                               const SizedBox(height: 20,),
                               AppTextField('Enter email',
                                 onSave: (value) => state.email = value,
@@ -70,7 +81,7 @@ class _LoginPageView extends WidgetView<LoginPage, _LoginPageController> {
                               const SizedBox(height: 20,),
                               // if(bloc is LoadingState)
                               if (bloc is LoadingState)
-                                const SizedBox(width: 50, height: 50, child: CircularProgressIndicator(),),
+                                const SizedBox(width: 30, height: 30, child: CircularProgressIndicator(),),
                               if(bloc is !LoadingState)
                                 Builder(
                                     builder: (c) {
@@ -99,15 +110,25 @@ class _LoginPageView extends WidgetView<LoginPage, _LoginPageController> {
 class _LoginPageController extends State<LoginPage> with FormMixin {
 
   String? email, password;
+  // final _authBloc = AuthUserBloc(logoutDummyUserUseCase: sl(), loginWithDummyUserUseCase: sl(), isUserAuthenticatedUseCase: sl());
+
 
   @override
   Widget build(BuildContext context) => _LoginPageView(this);
 
-  void loginButtonTapped(BuildContext ctx){
-
+  void loginButtonTapped(BuildContext ctx) async{
+    // Check if all fields are valid
     if(!validateAndSaveOnSubmit(ctx)){
       return;
     }
     Form.of(ctx)?.save();
+
+    final either = await context.read<AuthUserBloc>().login(email: email!, password: password!);
+    // check if usr has successfully logged in, then navigate user to home screen
+    if(either != null && either.isRight()){
+      showSnackBar(context, "Login successful");
+      context.router.push(const HomePageRoute());
+    }
+
   }
 }
