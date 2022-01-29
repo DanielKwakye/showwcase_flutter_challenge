@@ -6,7 +6,7 @@ class PokemonMemoryObject {
 
   List<Pokemon> originalList = [];
   List<Pokemon> addedList = [];
-  PokemonList? pokemonList = const PokemonList(count: 0, results: []);
+  late PokemonList? pokemonList;
 
 
   PokemonList? addListItem(Pokemon pokemon){
@@ -48,11 +48,13 @@ class PokemonMemoryObject {
   void setList(PokemonList? pl) {
     pokemonList = pl;
     if(pl == null) return;
+
     originalList.clear();
-    print("pl.results: ${pl.results}");
     originalList.addAll(pl.results);
-    // originalList.addAll(addedList);
+    originalList.addAll(addedList);
+    pokemonList?.results.clear();
     pokemonList?.results.addAll(originalList);
+
   }
 
   PokemonList? getList() {

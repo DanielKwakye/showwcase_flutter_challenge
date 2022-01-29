@@ -56,6 +56,7 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
   Future<PokemonListModel?> getPokemonListFromRemoteSource({int? limit, int? offset}) async {
 
     Uri url = Uri.parse("$kBaseUrl?limit=$limit&offset=$offset");
+    print('api url: $url');
 
     final response = await client.get(
       url,
@@ -70,7 +71,8 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
 
       final clientResponse = json.decode(body);
 
-      return PokemonListModel.fromJson(clientResponse);
+      final model = PokemonListModel.fromJson(clientResponse);
+      return model;
 
     } else {
 

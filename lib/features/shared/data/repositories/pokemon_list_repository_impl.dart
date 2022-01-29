@@ -36,8 +36,9 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
      return Right(result);
   }
 
+  /// this method gets pokemons from the api and set it to the remote source
   @override
-  Future<Either<Failure?, PokemonList?>?>? getPokemonList({int? offset = 0, int? limit = 20}) async {
+  Future<Either<Failure?, PokemonList?>?>? getPokemonList({int? offset, int? limit}) async {
     var isConnected = await networkInfo.isConnected;
     if(isConnected == null || !isConnected){
       return Left(ServerFailure());
@@ -45,12 +46,14 @@ class PokemonListRepositoryImpl implements PokemonListRepository{
 
     try{
 
+      // fetch pokemon from api
       final pokemonModelList = await pokemonRemoteDataSource.getPokemonListFromRemoteSource(offset: offset, limit: limit);
 
       if(pokemonModelList == null){
         return Left(ServerFailure());
       }
 
+      // set pokemon to remote souce
       pokemonMemoryDataSource.setPokemonListInMemorySource(pokemonModelList);
       return Right(await pokemonMemoryDataSource.getPokemonListFromMemorySource(limit: limit, offset: offset));
 

@@ -38,7 +38,7 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
       ),
       body:
       Container(
-        color: backgroundGray,
+        color: Colors.white,
         child: BlocBuilder(
         bloc: state._pokemonBloc,
         builder: (ctx, bloc){
@@ -72,28 +72,13 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
               child: AnimatedColumnWidget(
                   animateType: AnimateType.slideUp,
                   children: [
-                    // pokemon
-                    Container(
-                      margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      decoration: BoxDecoration(
-                          color:  Colors.white,
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: ListTile(
-                        leading: CircleAvatar(child: Image.network(generatePokemonImageUrl(widget.pokemon.id)),),
-                        title: Text(bloc.data.name),
-                        subtitle: const Text('name'),
-                      ),
-                    ),
-
                     // detail
 
                     Container(
                       margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
                       padding: const EdgeInsets.symmetric(vertical: 5),
                       decoration: BoxDecoration(
-                          color:  Colors.white,
+                          color:  backgroundGray,
                           borderRadius: BorderRadius.circular(10)
                       ),
                       child: ListTile(
@@ -107,7 +92,7 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
                       margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
                       padding: const EdgeInsets.symmetric(vertical: 5),
                       decoration: BoxDecoration(
-                          color:  Colors.white,
+                          color:  backgroundGray,
                           borderRadius: BorderRadius.circular(10)
                       ),
                       child: ListTile(
@@ -125,7 +110,7 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
                       margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
                       padding: const EdgeInsets.symmetric(vertical: 5),
                       decoration: BoxDecoration(
-                          color:  Colors.white,
+                          color:  backgroundGray,
                           borderRadius: BorderRadius.circular(10)
                       ),
                       child: ListTile(
@@ -145,7 +130,7 @@ class _PokemonDetailPageView extends WidgetView<PokemonDetailPage, _PokemonDetai
                       margin: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
                       padding: const EdgeInsets.symmetric(vertical: 5),
                       decoration: BoxDecoration(
-                          color:  Colors.white,
+                          color:  backgroundGray,
                           borderRadius: BorderRadius.circular(10)
                       ),
                       child: ListTile(

@@ -25,4 +25,9 @@ class PokemonListModel extends PokemonList {
     );
   }
 
+  @override
+  String toString() {
+    return "count:$count next: $next, previous: $previous";
+  }
+
 }

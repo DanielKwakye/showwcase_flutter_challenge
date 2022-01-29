@@ -5,16 +5,13 @@ import 'package:showwcase_flutter_challenge/core/mixin/form_mixin.dart';
 import 'package:showwcase_flutter_challenge/core/utils/bloc_state.dart';
 import 'package:showwcase_flutter_challenge/core/utils/colors.dart';
 import 'package:showwcase_flutter_challenge/core/utils/constants.dart';
-import 'package:showwcase_flutter_challenge/core/utils/enums.dart';
 import 'package:showwcase_flutter_challenge/core/utils/helpers.dart';
 import 'package:showwcase_flutter_challenge/core/utils/images.dart';
-import 'package:showwcase_flutter_challenge/core/utils/injector.dart';
 import 'package:showwcase_flutter_challenge/core/utils/widget_view.dart';
 import 'package:showwcase_flutter_challenge/features/auth/presentation/manager/auth_user_bloc.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon.dart';
 import 'package:showwcase_flutter_challenge/features/shared/domain/entities/pokemon_list.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/manager/pokemon_bloc.dart';
-import 'package:showwcase_flutter_challenge/features/shared/presentation/pages/favorites_page.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/animated_column_widget.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/app_rounded_button.dart';
 import 'package:showwcase_flutter_challenge/features/shared/presentation/widgets/app_search_widget.dart';
@@ -252,7 +249,7 @@ class _HomePageController extends State<HomePage> with FormMixin {
     super.initState();
     onWidgetBindingComplete(
         onComplete: () =>
-            context.read<PokemonBloc>().fetchPokes(limit: 100, offset: 0));
+            context.read<PokemonBloc>().fetchPokes(limit: 20, offset: 0));
   }
 
   void addToFavoriteTapped(Pokemon pokemon) {
@@ -275,6 +272,7 @@ class _HomePageController extends State<HomePage> with FormMixin {
     _refreshController.loadComplete();
   }
 
+  // This method adds a new pokemon
   void onAddNewPokemonButtonTapped(BuildContext ctx) async {
     if (!validateAndSaveOnSubmit(ctx)) {
       return;
@@ -293,6 +291,7 @@ class _HomePageController extends State<HomePage> with FormMixin {
     }
   }
 
+  // This method logs the user out of the system.
   void logout()  {
 
     showHandyConfirmDialog(context, content: "You will be logged out of this account", okTapped: () async {

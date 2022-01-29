@@ -11,7 +11,7 @@ class GetPokemonListUseCase implements UseCase<PokemonList, Params> {
 
   @override
   Future<Either<Failure?, PokemonList?>?>? call(params) async {
-    return await pokemonListRepository.getPokemonList();
+    return await pokemonListRepository.getPokemonList(limit: params.limit, offset: params.offset);
   }
 
 
