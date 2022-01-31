@@ -11,7 +11,7 @@ import 'package:showwcase_flutter_challenge/features/shared/presentation/pages/p
 /// This auto router automatically generates routes for every Page added
 @AdaptiveAutoRouter(
     routes: <AutoRoute>[
-      AutoRoute(page: HomePage, guards: [AuthGuard]),
+      AutoRoute(page: HomePage, guards: [AuthGuard], initial: true),
       AutoRoute(page: PokemonDetailPage),
       AutoRoute(page: FavoritesPage),
       AutoRoute(page: LoginPage),

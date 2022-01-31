@@ -3,7 +3,8 @@
    <application
         android:label="showwcase_flutter_challenge"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+       android:allowBackup="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

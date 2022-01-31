@@ -56,8 +56,7 @@ class AppRouter extends _i5.RootStackRouter {
 
   @override
   List<_i5.RouteConfig> get routes => [
-        _i5.RouteConfig(HomePageRoute.name,
-            path: '/home-page', guards: [authGuard]),
+        _i5.RouteConfig(HomePageRoute.name, path: '/', guards: [authGuard]),
         _i5.RouteConfig(PokemonDetailPageRoute.name,
             path: '/pokemon-detail-page'),
         _i5.RouteConfig(FavoritesPageRoute.name, path: '/favorites-page'),
@@ -68,7 +67,7 @@ class AppRouter extends _i5.RootStackRouter {
 /// generated route for
 /// [_i1.HomePage]
 class HomePageRoute extends _i5.PageRouteInfo<void> {
-  const HomePageRoute() : super(HomePageRoute.name, path: '/home-page');
+  const HomePageRoute() : super(HomePageRoute.name, path: '/');
 
   static const String name = 'HomePageRoute';
 }
