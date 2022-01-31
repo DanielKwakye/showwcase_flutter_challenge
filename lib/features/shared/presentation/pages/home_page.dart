@@ -50,7 +50,8 @@ class _HomePageView extends WidgetView<HomePage, _HomePageController> {
           );
         },
       ),
-      body: BlocBuilder(
+      body:
+      BlocBuilder(
         bloc: context.read<PokemonBloc>(),
         builder: (ctx, bloc) {
           return Container(
